@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprechstunde – B2.1 Anekdoten-Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream:     #FBF7F1;
+    --ink:       #2C2118;
+    --ink-soft:  #6B5744;
+    --amber:     #C87941;
+    --amber-lt:  #F0C08A;
+    --shadow:    rgba(80, 50, 20, 0.10);
+    --shadow-md: rgba(80, 50, 20, 0.18);
+    --radius:    16px;
+    --radius-sm: 10px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(ellipse 60% 50% at 10% 0%, #F5E6D3 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 100%, #EFE2D4 0%, transparent 55%);
+    min-height: 100vh;
+    color: var(--ink);
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 52px 24px 32px;
+    position: relative;
+  }
+  .header-kicker {
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    background: rgba(200, 121, 65, 0.10);
+    border-radius: 40px;
+    padding: 5px 16px;
+    margin-bottom: 18px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.18;
+    margin-bottom: 10px;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+  header p {
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  /* ── RANDOM BUTTON ── */
+  .btn-random {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--amber);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.97rem;
+    border: none;
+    border-radius: 40px;
+    padding: 13px 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(200,121,65,0.30);
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-random:hover {
+    background: #B5682E;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 24px rgba(200,121,65,0.38);
+  }
+  .btn-random:active { transform: translateY(0); }
+  .btn-random svg { flex-shrink: 0; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    text-align: center;
+    margin: 10px 0 36px;
+    color: var(--amber-lt);
+    font-size: 1.4rem;
+    letter-spacing: 0.2em;
+  }
+
+  /* ── GRID ── */
+  .grid-wrapper { padding: 0 24px 72px; max-width: 1300px; margin: 0 auto; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 1100px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 780px)  { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px)  { .card-grid { grid-template-columns: 1fr; } }
+
+  /* ── CARD ── */
+  .card {
+    border-radius: var(--radius);
+    padding: 22px 20px 18px;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.30);
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-5px) scale(1.013);
+    box-shadow: 0 10px 28px var(--shadow-md);
+  }
+  .card-icon {
+    font-size: 1.9rem;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .card-subtitle {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(44,33,24,0.45);
+    margin-bottom: 12px;
+  }
+  .question-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .question-list li {
+    font-size: 0.87rem;
+    line-height: 1.45;
+    color: var(--ink);
+    background: rgba(255,255,255,0.55);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: background 0.16s, transform 0.12s;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    position: relative;
+  }
+  .question-list li:hover {
+    background: rgba(255,255,255,0.88);
+    transform: translateX(3px);
+  }
+  .question-list li::before {
+    content: '▸';
+    font-size: 0.65rem;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.4;
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 33, 24, 0.48);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal-box {
+    background: var(--cream);
+    border-radius: 24px;
+    padding: 44px 40px 36px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 24px 64px rgba(44,33,24,0.28);
+    position: relative;
+    transform: scale(0.92) translateY(12px);
+    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1);
+    text-align: center;
+  }
+  .modal-overlay.open .modal-box {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-topic-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--amber-lt);
+    color: var(--ink-soft);
+    border-radius: 40px;
+    padding: 5px 16px;
+    margin-bottom: 20px;
+  }
+
+  .modal-question {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.25rem, 3vw, 1.65rem);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.45;
+    margin-bottom: 34px;
+  }
+
+  /* ── TIMER ── */
+  .timer-ring-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+  }
+  .timer-ring-wrap svg { transform: rotate(-90deg); }
+  .timer-track {
+    fill: none;
+    stroke: #EEE3D5;
+    stroke-width: 8;
+  }
+  .timer-arc {
+    fill: none;
+    stroke: var(--amber);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 0;
+    transition: stroke 0.4s;
+  }
+  .timer-arc.warning { stroke: #E05A3A; }
+  .timer-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    transition: color 0.4s;
+  }
+  .timer-number.warning { color: #E05A3A; }
+
+  .timer-warning-text {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #E05A3A;
+    letter-spacing: 0.04em;
+    min-height: 1.3em;
+    margin-bottom: 16px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .timer-warning-text.visible { opacity: 1; }
+
+  /* ── MODAL BUTTONS ── */
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .btn-modal {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    border: none;
+    border-radius: 40px;
+    padding: 11px 26px;
+    cursor: pointer;
+    transition: transform 0.14s, box-shadow 0.14s;
+    letter-spacing: 0.02em;
+  }
+  .btn-modal:hover { transform: translateY(-2px); }
+  .btn-modal:active { transform: translateY(0); }
+
+  .btn-pause {
+    background: var(--amber);
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(200,121,65,0.28);
+  }
+  .btn-pause:hover { background: #B5682E; }
+
+  .btn-reset {
+    background: rgba(44,33,24,0.08);
+    color: var(--ink-soft);
+  }
+  .btn-reset:hover { background: rgba(44,33,24,0.14); }
+
+  .btn-close-modal {
+    background: #fff;
+    color: var(--ink-soft);
+    border: 1.5px solid rgba(44,33,24,0.12);
+  }
+  .btn-close-modal:hover { background: #f5ede4; }
+
+  /* X button */
+  .modal-x {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(44,33,24,0.07);
+    border: none;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    transition: background 0.15s;
+  }
+  .modal-x:hover { background: rgba(44,33,24,0.14); }
+
+  /* ── PULSE ANIMATION for warning ── */
+  @keyframes pulse-ring {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .timer-ring-wrap.pulsing { animation: pulse-ring 0.8s ease-in-out infinite; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 16px 24px 32px;
+    font-size: 0.78rem;
+    color: rgba(107,87,68,0.45);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-kicker">Deutsch B2.1 · Mündliche Ausdrucksfähigkeit</div>
+  <h1>Die <em>Anekdoten</em>-Runde</h1>
+  <p>Wähle eine Frage, klicke darauf und erzähl eine kurze Anekdote – du hast genau 60 Sekunden!</p>
+  <button class="btn-random" id="btn-random">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="16 3 21 3 21 8"></polyline>
+      <line x1="4" y1="20" x2="21" y2="3"></line>
+      <polyline points="21 16 21 21 16 21"></polyline>
+      <line x1="15" y1="15" x2="21" y2="21"></line>
+    </svg>
+    Zufällige Frage
+  </button>
+</header>
+
+<div class="divider">· · ·</div>
+
+<div class="grid-wrapper">
+  <div class="card-grid" id="card-grid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-x" id="modal-x" aria-label="Schließen">✕</button>
+    <div class="modal-topic-tag" id="modal-topic-tag">Thema</div>
+    <p class="modal-question" id="modal-question">Frage wird geladen …</p>
+
+    <div class="timer-ring-wrap" id="timer-ring-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="timer-track" cx="60" cy="60" r="50"/>
+        <circle class="timer-arc"  cx="60" cy="60" r="50" id="timer-arc"/>
+      </svg>
+      <div class="timer-number" id="timer-number">60</div>
+    </div>
+
+    <div class="timer-warning-text" id="timer-warning">⚡ Fast vorbei!</div>
+
+    <div class="modal-actions">
+      <button class="btn-modal btn-pause"        id="btn-pause">Pause</button>
+      <button class="btn-modal btn-reset"        id="btn-reset">↺ Neustart</button>
+
+    </div>
+  </div>
+</div>
+
+<footer>Sprechstunde · Anekdoten-Board · B2.1</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ────────────────────────────────────────────
+     DATA
+  ──────────────────────────────────────────── */
+  const CATEGORIES = [
+    {
+      title: 'Familie & Kindheit',
+      subtitle: 'Family & Childhood',
+      icon: '🏡',
+      color: '#FAD7D7',
+      questions: [
+        'Erzähl von einem Erlebnis aus deiner Kindheit, das du nie vergessen wirst.',
+        'Gab es eine Familientradition, die für euch besonders wichtig war?',
+        'Was haben deine Eltern oder Großeltern dir beigebracht, das dir heute noch hilft?',
+        'Warst du als Kind eher ein Stubenhocker oder immer draußen unterwegs?',
+        'Wie war die Atmosphäre bei euch zu Hause, wenn die ganze Familie zusammenkam?'
+      ]
+    },
+    {
+      title: 'Reisen & Urlaub',
+      subtitle: 'Travel & Holidays',
+      icon: '✈️',
+      color: '#CCE8F7',
+      questions: [
+        'Beschreib einen Urlaub, der nicht so lief wie geplant – und was du daraus mitgenommen hast.',
+        'Gibt es einen Ort, den du bereist hast und unbedingt wieder besuchen würdest?',
+        'Packst du lieber spontan den Koffer oder planst du alles bis ins Detail?',
+        'Hast du mal eine Unterkunft erlebt, die völlig anders war als erwartet?',
+        'Was war das Eigenartigste oder Unvergesslichste, das du im Ausland gegessen hast?'
+      ]
+    },
+    {
+      title: 'Arbeit & Karriere',
+      subtitle: 'Work & Career',
+      icon: '💼',
+      color: '#C9EDD0',
+      questions: [
+        'Erzähl von einem Arbeitstag oder Praktikum, der besonders stressig oder lustig war.',
+        'Hattest du schon mal einen Job, den du überhaupt nicht gemocht hast?',
+        'Wie bist du zu deinem jetzigen Beruf oder Studienfach gekommen?',
+        'Gibt es jemanden in deinem Berufsleben, der dich besonders inspiriert hat?',
+        'Was war die schwierigste Entscheidung, die du in deiner Ausbildung treffen musstest?'
+      ]
+    },
+    {
+      title: 'Freundschaft',
+      subtitle: 'Friendship & Relationships',
+      icon: '🤝',
+      color: '#E2D0F5',
+      questions: [
+        'Wie hast du deinen besten Freund oder deine beste Freundin kennengelernt?',
+        'Gab es mal einen richtigen Streit mit jemandem, den du liebst – und wie habt ihr euch versöhnt?',
+        'Was schätzt du am meisten an deinen engen Freunden?',
+        'Hast du Freundschaften, die trotz großer Entfernung bis heute bestehen?',
+        'Erzähl von einer spontanen Aktion mit Freunden, die unvergesslich war.'
+      ]
+    },
+    {
+      title: 'Technologie',
+      subtitle: 'Technology & Social Media',
+      icon: '📱',
+      color: '#FAE0C8',
+      questions: [
+        'Wie hat sich dein Alltag durch Smartphones oder soziale Medien verändert?',
+        'Hast du mal etwas online gepostet, das du später bereut hast?',
+        'Gibt es eine App oder ein Gerät, auf das du absolut nicht verzichten könntest?',
+        'Wie gehst du damit um, wenn du zu viel Zeit am Bildschirm verbringst?',
+        'Erinnerst du dich noch an dein allererstes Handy oder deinen ersten Computer?'
+      ]
+    },
+    {
+      title: 'Essen & Kulinarik',
+      subtitle: 'Food & Cooking',
+      icon: '🍳',
+      color: '#FAF3C0',
+      questions: [
+        'Beschreib ein Gericht aus deiner Kindheit, das dich sofort an Zuhause erinnert.',
+        'Hast du mal versucht, etwas Kompliziertes zu kochen – und was ist dabei passiert?',
+        'Gibt es Lebensmittel, die du früher gehasst hast, aber heute liebst?',
+        'Wie wichtig ist es dir, wo und wie du einkaufst – zum Beispiel Bio oder regional?',
+        'Was war das beste Essen, das du je in einem Restaurant oder bei jemandem bekommen hast?'
+      ]
+    },
+    {
+      title: 'Sport & Freizeit',
+      subtitle: 'Sports & Leisure',
+      icon: '🏃',
+      color: '#C5F0DF',
+      questions: [
+        'Welche Sportart hast du mal ausprobiert und nie wieder gemacht – und warum?',
+        'Beschreib eine unvergessliche Erfahrung beim Sport oder bei einer körperlichen Herausforderung.',
+        'Was machst du am liebsten, wenn du einfach mal abschalten willst?',
+        'Hast du eine Leidenschaft oder ein Hobby, das andere vielleicht überrascht?',
+        'Gibt es eine Sportveranstaltung oder ein Konzert, das dich wirklich mitgerissen hat?'
+      ]
+    },
+    {
+      title: 'Stadtleben & Natur',
+      subtitle: 'City Life & Nature',
+      icon: '🌿',
+      color: '#C8EAF4',
+      questions: [
+        'Beschreib den Ort, an dem du aufgewachsen bist – was liebst du daran, was vermisst du?',
+        'Bevorzugst du eher das Leben in der Stadt oder auf dem Land – und warum?',
+        'Hast du einen Lieblingsort in der Natur, an den du immer wieder zurückgehst?',
+        'Wie verändert sich deine Stimmung, wenn du lange drinnen bleibst?',
+        'Was fällt dir in einer neuen Stadt als Erstes auf?'
+      ]
+    },
+    {
+      title: 'Musik & Kultur',
+      subtitle: 'Music & Culture',
+      icon: '🎶',
+      color: '#F9D0E5',
+      questions: [
+        'Gibt es ein Lied oder ein Album, das eine besondere Bedeutung für dich hat?',
+        'Hast du ein Konzert oder eine Aufführung erlebt, die dich wirklich bewegt hat?',
+        'Was hat dich zuletzt beim Lesen, Serien schauen oder im Kino wirklich begeistert?',
+        'Gibt es einen Film, den du mehrmals gesehen hast und immer noch gerne schaust?',
+        'Was bringt dir Kunst, Musik oder Literatur, das du im Alltag sonst nicht findest?'
+      ]
+    },
+    {
+      title: 'Schule & Bildung',
+      subtitle: 'School & Education',
+      icon: '📚',
+      color: '#FBE6B8',
+      questions: [
+        'Welches Schulfach hat dich am meisten geprägt – und welches hat dich am wenigsten interessiert?',
+        'Erzähl von einer Lehrkraft, die wirklich einen bleibenden Eindruck hinterlassen hat.',
+        'Wie war deine erste Woche in einer neuen Schule oder an der Universität?',
+        'Gibt es etwas, das du gerne in der Schule gelernt hättest, aber nicht konntest?',
+        'Hattest du mal einen totalen Aussetzer bei einer Prüfung oder Präsentation?'
+      ]
+    },
+    {
+      title: 'Gesundheit & Wohlbefinden',
+      subtitle: 'Health & Wellbeing',
+      icon: '🌱',
+      color: '#C5EDE9',
+      questions: [
+        'Was tust du, wenn du richtig gestresst bist – hast du bestimmte Rituale?',
+        'Gab es mal eine Zeit, in der du bewusst auf etwas verzichtet hast?',
+        'Hast du schon mal etwas für deine Gesundheit getan, das überraschend viel bewirkt hat?',
+        'Wie wichtig ist dir Schlaf – und was machst du, wenn du schlecht schläfst?',
+        'Was bedeutet für dich ein gelungener Tag – wie sieht der aus?'
+      ]
+    },
+    {
+      title: 'Missgeschicke & Überraschungen',
+      subtitle: 'Blunders & Surprises',
+      icon: '😅',
+      color: '#D8D0F5',
+      questions: [
+        'Erzähl von einer Situation, in der du dich so richtig blamiert hast.',
+        'Hast du mal eine Überraschung bekommen, die dich wirklich umgehauen hat?',
+        'Gab es einen Moment, in dem du etwas gesagt hast und es sofort bereut hast?',
+        'Was war dein peinlichster Moment als Kind oder Jugendlicher?',
+        'Hast du mal aus Versehen jemandem etwas Falsches gesagt oder geschickt?'
+      ]
+    }
+  ];
+
+  /* ────────────────────────────────────────────
+     BUILD CARDS
+  ──────────────────────────────────────────── */
+  const grid = document.getElementById('card-grid');
+
+  CATEGORIES.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.background = cat.color;
+
+    const icon = document.createElement('span');
+    icon.className = 'card-icon';
+    icon.textContent = cat.icon;
+
+    const title = document.createElement('h2');
+    title.className = 'card-title';
+    title.textContent = cat.title;
+
+    const subtitle = document.createElement('div');
+    subtitle.className = 'card-subtitle';
+    subtitle.textContent = cat.subtitle;
+
+    const ul = document.createElement('ul');
+    ul.className = 'question-list';
+
+    cat.questions.forEach(q => {
+      const li = document.createElement('li');
+      li.textContent = q;
+      li.addEventListener('click', function () {
+        openModal(q, cat.title);
+      });
+      ul.appendChild(li);
+    });
+
+    card.appendChild(icon);
+    card.appendChild(title);
+    card.appendChild(subtitle);
+    card.appendChild(ul);
+    grid.appendChild(card);
+  });
+
+  /* ────────────────────────────────────────────
+     RANDOM QUESTION
+  ──────────────────────────────────────────── */
+  document.getElementById('btn-random').addEventListener('click', function () {
+    const cat = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    const q   = cat.questions[Math.floor(Math.random() * cat.questions.length)];
+    openModal(q, cat.title);
+  });
+
+  /* ────────────────────────────────────────────
+     TIMER
+  ──────────────────────────────────────────── */
+  const TOTAL      = 60;
+  const CIRCUMF    = 2 * Math.PI * 50; // r=50 → ≈ 314.16
+
+  let timerSec     = TOTAL;
+  let timerRunning = false;
+  let timerHandle  = null;
+
+  const arc         = document.getElementById('timer-arc');
+  const numberEl    = document.getElementById('timer-number');
+  const warningEl   = document.getElementById('timer-warning');
+  const ringWrap    = document.getElementById('timer-ring-wrap');
+  const btnPause    = document.getElementById('btn-pause');
+
+  arc.style.strokeDasharray  = CIRCUMF;
+  arc.style.strokeDashoffset = 0;
+
+  function updateTimerUI () {
+    const frac = timerSec / TOTAL;
+    arc.style.strokeDashoffset = CIRCUMF * (1 - frac);
+    numberEl.textContent = timerSec;
+
+    const isWarning = timerSec <= 10;
+    arc.classList.toggle('warning', isWarning);
+    numberEl.classList.toggle('warning', isWarning);
+    warningEl.classList.toggle('visible', isWarning);
+    ringWrap.classList.toggle('pulsing', isWarning && timerRunning);
+  }
+
+  function startTimer () {
+    if (timerRunning) return;
+    timerRunning = true;
+    btnPause.textContent = 'Pause';
+    timerHandle = setInterval(function () {
+      if (timerSec <= 0) {
+        clearInterval(timerHandle);
+        timerRunning = false;
+        btnPause.textContent = 'Start';
+        ringWrap.classList.remove('pulsing');
+        return;
+      }
+      timerSec--;
+      updateTimerUI();
+    }, 1000);
+  }
+
+  function pauseTimer () {
+    clearInterval(timerHandle);
+    timerRunning = false;
+    ringWrap.classList.remove('pulsing');
+    btnPause.textContent = 'Fortsetzen';
+  }
+
+  function resetTimer () {
+    clearInterval(timerHandle);
+    timerRunning = false;
+    timerSec = TOTAL;
+    btnPause.textContent = 'Start';
+    updateTimerUI();
+    ringWrap.classList.remove('pulsing');
+    // do NOT auto-start
+  }
+
+  btnPause.addEventListener('click', function () {
+    if (timerRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', resetTimer);
+
+  /* ────────────────────────────────────────────
+     MODAL
+  ──────────────────────────────────────────── */
+  const overlay   = document.getElementById('modal-overlay');
+  const topicTag  = document.getElementById('modal-topic-tag');
+  const questionEl= document.getElementById('modal-question');
+
+  function openModal (question, topic) {
+    topicTag.textContent   = topic;
+    questionEl.textContent = question;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    resetTimer();
+  }
+
+  function closeModal () {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    pauseTimer();
+  }
+
+  document.getElementById('modal-x').addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === ' ' && overlay.classList.contains('open')) {
+      e.preventDefault();
+      timerRunning ? pauseTimer() : startTimer();
+    }
+  });
+
+  /* ── Initialise arc display ── */
+  updateTimerUI();
+})();
+</script>
+</body>
+</html>

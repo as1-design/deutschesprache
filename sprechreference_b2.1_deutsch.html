@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sprechreference B2 — Deutsch</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --border: #d2daea;
+    --text: #1a2540;
+    --muted: #6e7fa4;
+    --accent: #2c4a8c;
+    --accent-dark: #1e3467;
+    --accent-light: #e6ebf7;
+    --used: #1b6b45;
+    --used-bg: #d4edda;
+    --used-border: #6ed0a0;
+    --want: #8b3a0a;
+    --want-bg: #fef0e7;
+    --want-border: #f5a97c;
+    --strength-high: #b83232;
+    --strength-mid: #2c4a8c;
+    --strength-low: #7283a3;
+    --tab-h: 64px;
+    --header-h: 58px;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: calc(var(--tab-h) + 16px);
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--accent);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+    box-shadow: 0 2px 10px rgba(28,44,120,0.22);
+    overflow: hidden;
+  }
+
+  /* Subtle geometric background detail on top bar */
+  .top-bar::before {
+    content: '';
+    position: absolute;
+    top: -18px; right: -18px;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    pointer-events: none;
+  }
+  .top-bar::after {
+    content: '';
+    position: absolute;
+    bottom: -24px; right: 50px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+  }
+
+  .top-bar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    position: relative;
+  }
+
+  .top-bar h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .top-bar-sub {
+    font-size: 0.67rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .top-stats {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    position: relative;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .stat-pill:active { opacity: 0.7; }
+  .stat-pill.used-pill { background: rgba(27,107,69,0.35); }
+  .stat-pill.want-pill { background: rgba(139,58,10,0.35); }
+
+  /* ── REGISTER NOTICE ── */
+  .register-notice {
+    background: var(--accent-light);
+    border-bottom: 1px solid var(--border);
+    padding: 7px 16px;
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .register-notice span { font-weight: 400; color: var(--muted); }
+
+  /* ── LEGEND ── */
+  .legend {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 9px 16px;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    align-items: center;
+  }
+  .legend::-webkit-scrollbar { display: none; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.74rem;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .legend-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-used  { background: #4ade80; }
+  .dot-want  { background: #f59e0b; }
+  .dot-clear { background: #c8cfe0; border: 1px solid #a8b3cc; }
+
+  .clear-all {
+    margin-left: auto;
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.71rem;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .clear-all:active { border-color: var(--accent); color: var(--accent); }
+
+  /* ── CONTENT ── */
+  .content { padding: 0; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── ACCORDION ── */
+  .accordion {
+    margin: 10px 12px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    gap: 10px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s, background 0.15s;
+  }
+  .accordion.open .accordion-header { border-left-color: var(--accent); }
+  .accordion-header:active { background: var(--bg); }
+
+  .accordion-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+    flex: 1;
+    line-height: 1.3;
+  }
+  .accordion.open .accordion-title { font-style: normal; font-weight: 700; }
+
+  .accordion-arrow {
+    font-size: 0.65rem;
+    color: var(--muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .accordion.open .accordion-arrow { transform: rotate(180deg); }
+
+  .accordion-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .accordion.open .accordion-body { display: block; }
+
+  /* ── CARD WITHIN ACCORDION ── */
+  .acc-card {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--bg);
+  }
+  .acc-card:last-child { border-bottom: none; }
+
+  .card-label {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .strength-bar {
+    display: inline-block;
+    height: 4px;
+    border-radius: 3px;
+  }
+  .strength-high { background: var(--strength-high); width: 28px; }
+  .strength-mid  { background: var(--strength-mid);  width: 18px; }
+  .strength-low  { background: var(--strength-low);  width: 10px; }
+
+  .label-high  { color: var(--strength-high); }
+  .label-mid   { color: var(--strength-mid); }
+  .label-low   { color: var(--strength-low); }
+  .label-plain { color: var(--muted); }
+
+  /* ── PHRASE ── */
+  .phrases { display: flex; flex-direction: column; gap: 6px; }
+
+  .phrase {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 11px 13px;
+    border-radius: 9px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    background: var(--bg);
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+    font-size: 0.89rem;
+    line-height: 1.5;
+    min-height: 46px;
+  }
+  .phrase:active { opacity: 0.75; }
+
+  .phrase.used { background: var(--used-bg); border-color: var(--used-border); }
+  .phrase.want { background: var(--want-bg); border-color: var(--want-border); }
+
+  .phrase-icon {
+    width: 21px; height: 21px;
+    border-radius: 50%;
+    border: 1.5px solid #b8c2d8;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    background: white;
+    transition: all 0.15s;
+    margin-top: 2px;
+  }
+
+  .phrase.used .phrase-icon { background: var(--used); border-color: var(--used); color: white; }
+  .phrase.want .phrase-icon { background: var(--want); border-color: var(--want); color: white; }
+
+  .phrase-text { flex: 1; }
+
+  .phrase-note {
+    font-size: 0.73rem;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* Grammar highlight */
+  .phrase-text strong {
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+
+  .gram-tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 5px;
+    vertical-align: middle;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ── MY PHRASES PANEL ── */
+  #panel-meinephrases {
+    padding: 12px;
+  }
+
+  .myphrases-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+  }
+
+  .myphrases-empty .empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    opacity: 0.45;
+  }
+
+  .myphrases-empty p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .myphrases-empty strong { color: var(--text); }
+
+  .myphrases-section {
+    margin-bottom: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .myphrases-section-header {
+    padding: 10px 16px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .myphrases-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .myphrases-group {
+    padding: 11px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .myphrases-group-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .myphrases-group-label.used-label { color: var(--used); }
+  .myphrases-group-label.want-label { color: var(--want); }
+
+  .myphrases-phrase {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.87rem;
+    line-height: 1.5;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .myphrases-phrase:last-child { margin-bottom: 0; }
+  .myphrases-phrase:active { opacity: 0.65; }
+  .myphrases-phrase.used { background: var(--used-bg); }
+  .myphrases-phrase.want { background: var(--want-bg); }
+
+  .mp-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.66rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: white;
+  }
+  .mp-icon.used-icon { background: var(--used); }
+  .mp-icon.want-icon { background: var(--want); }
+
+  .clear-my {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  /* ── BOTTOM TAB BAR ── */
+  .tab-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--tab-h);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 100;
+    box-shadow: 0 -2px 14px rgba(28,44,120,0.1);
+  }
+
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.61rem;
+    font-weight: 600;
+    padding: 7px 2px;
+    transition: color 0.2s;
+    user-select: none;
+    border-top: 2.5px solid transparent;
+    position: relative;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .tab.active { color: var(--accent); border-top-color: var(--accent); }
+  .tab-icon { font-size: 1.15rem; line-height: 1; }
+
+  .tab-badge {
+    position: absolute;
+    top: 5px;
+    right: calc(50% - 20px);
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    display: none;
+  }
+  .tab-badge.visible { display: block; }
+
+  .panel > .accordion:last-child { margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <h1>Sprechreference</h1>
+    <div class="top-bar-sub">Deutsch · B2.1</div>
+  </div>
+  <div class="top-stats">
+    <div class="stat-pill used-pill" onclick="showTab('meinungen', document.querySelectorAll('.tab')[0]); setTimeout(()=>showTab('meinephrases', document.querySelector('.tab:last-child')),0)">✓ <span id="count-used">0</span></div>
+    <div class="stat-pill want-pill" onclick="showTab('meinephrases', document.querySelector('.tab:last-child'))">★ <span id="count-want">0</span></div>
+  </div>
+</div>
+
+<div class="register-notice">
+  📘 Register: <span>Sie (formal) · du (informal) — beide Formen sind in der Prüfung möglich</span>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-used"></div> Benutzt ✓ — einmal tippen</div>
+  <div class="legend-item"><div class="legend-dot dot-want"></div> Ausprobieren ★ — zweimal</div>
+  <div class="legend-item"><div class="legend-dot dot-clear"></div> Löschen — dreimal</div>
+  <button class="clear-all" onclick="clearAll()">Alle löschen</button>
+</div>
+
+<div class="content">
+
+  <!-- ══════════════════════════════════
+       MEINUNGEN
+  ══════════════════════════════════ -->
+  <div class="panel active" id="panel-meinungen">
+
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Meinung äußern</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Starke Überzeugung</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin <strong>fest davon überzeugt</strong>, dass…<span class="phrase-note">dass → Verb am Satzende</span></div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Es steht für mich <strong>außer Frage</strong>, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich habe keinen Zweifel daran, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin mir <strong>absolut sicher</strong>, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Für mich steht fest, dass…</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Gemäßigte Meinung</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Ich denke / finde / meine</strong>, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Meiner Meinung nach</strong>…<span class="phrase-note">Verb-Zweit-Stellung: „Meiner Meinung nach bin ich…"</span></div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Meiner Ansicht nach</strong>…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin der Meinung / Ansicht, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Von meinem Standpunkt aus</strong>…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Soweit ich das beurteilen kann,…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Es scheint mir, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich <strong>würde sagen</strong>, dass…<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Persönlich finde ich, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Was mich betrifft,…</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-low"><span class="strength-bar strength-low"></span> Vorsichtig / unsicher</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich habe das Gefühl, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich tendiere dazu zu denken, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin mir nicht sicher, aber ich <strong>würde</strong> eher sagen,…<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich neige dazu anzunehmen, dass…</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Meinung erfragen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-plain">An die Gruppe gerichtet</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Was denken Sie / denkst du darüber?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Was meinen Sie / meinst du dazu?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Wie stehen Sie / stehst du dazu?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Was ist Ihre / deine Meinung dazu?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Was halten Sie / hältst du davon?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Hat noch jemand eine andere Meinung?</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-plain">An eine bestimmte Person gerichtet</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">[Name], ich <strong>würde</strong> gern Ihre / deine Meinung dazu hören.<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich finde das eine gute Option — finden Sie / findest du nicht?</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Zustimmen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Volle Zustimmung</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Genau. / Ganz richtig.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich stimme Ihnen / dir <strong>völlig</strong> zu.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Da bin ich ganz Ihrer / deiner Meinung.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das sehe ich genauso.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Sie haben / Du hast <strong>völlig recht</strong>.</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Teilweise Zustimmung</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich stimme Ihnen / dir bis zu einem gewissen Grad zu.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das stimmt zwar, aber…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Da haben Sie / hast du recht, allerdings…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das ist ein fairer Punkt.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Na ja, da ist etwas dran.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Einverstanden, aber…</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Widersprechen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Starker Widerspruch</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Da bin ich leider anderer Meinung.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Da <strong>muss</strong> ich widersprechen.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das sehe ich ganz anders.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Da kann ich Ihnen / dir leider nicht zustimmen.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das halte ich für falsch.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich muss eine andere Sichtweise vertreten.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das entspricht nicht meiner Einschätzung.</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Teilweiser Widerspruch</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich verstehe, was Sie meinen / du meinst, aber ich sehe das anders.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin da nur <strong>teilweise</strong> Ihrer / deiner Meinung.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich stimme zu, was … betrifft, aber…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich <strong>würde</strong> eher das Gegenteil behaupten.<span class="phrase-note gram-tag">Konj. II</span></div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-low"><span class="strength-bar strength-low"></span> Bedenken äußern</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Meinen Sie / Meinst du wirklich, dass…?</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich mache mir Sorgen, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin nicht ganz davon überzeugt, dass…</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin mir nicht sicher, ob das eine so gute Idee ist.</div></div>
+            <div class="phrase" data-section="Meinungen" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das halte ich für eher fraglich.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-meinungen -->
+
+
+  <!-- ══════════════════════════════════
+       VORSCHLÄGE
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-vorschlaege">
+
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Vorschläge machen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-plain">Jemanden einladen / einbeziehen</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Würden Sie / Würdest du</strong> gerne + Infinitiv…?<span class="phrase-note gram-tag">Konj. II</span><span class="phrase-note">Würden Sie gerne eine andere Methode ausprobieren?</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Sollen wir</strong> + Infinitiv?<span class="phrase-note">Sollen wir eine kurze Pause einlegen?</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Warum</strong> + verben wir/verb+st du nicht + Nomen?<span class="phrase-note">Warum fragen wir nicht nach mehr Informationen?</span></div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-plain">Gemeinsam — „wir"-fokussiert</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Lass uns</strong> + Infinitiv.<span class="phrase-note">Lass uns diese zweite Option näher betrachten.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Wie wäre es mit</strong> + Dativ?<span class="phrase-note gram-tag">Konj. II + Dativ</span><span class="phrase-note">Wie wäre es mit einem anderen Ansatz?</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Wie wäre es, wenn wir</strong> + Konjunktiv II?<span class="phrase-note gram-tag">Konj. II</span><span class="phrase-note">Wie wäre es, wenn wir früher anfingen?</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Was wäre, wenn wir</strong> + Konjunktiv II?<span class="phrase-note gram-tag">Konj. II</span><span class="phrase-note">Was wäre, wenn wir uns in zwei Gruppen aufteilten?</span></div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-plain">Vorsichtig / abgeschwächt</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Vielleicht könnten wir</strong> + Infinitiv.<span class="phrase-note gram-tag">Konj. II von „können"</span><span class="phrase-note">Vielleicht könnten wir mit dem Budget anfangen.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Ich würde vorschlagen</strong>, + zu + Infinitiv.<span class="phrase-note gram-tag">Konj. II + zu-Inf.</span><span class="phrase-note">Ich würde vorschlagen, mit dem Zeitplan zu beginnen.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Hätten Sie / Hättest du daran gedacht</strong>, + zu + Infinitiv?<span class="phrase-note gram-tag">Konj. II Perf. + zu-Inf.</span><span class="phrase-note">Hätten Sie daran gedacht, es online zu machen?</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Es könnte sich lohnen</strong>, + zu + Infinitiv.<span class="phrase-note gram-tag">Konj. II + zu-Inf.</span><span class="phrase-note">Es könnte sich lohnen, den Fahrplan zuerst zu prüfen.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Es wäre vielleicht sinnvoll</strong>, + zu + Infinitiv.<span class="phrase-note gram-tag">Konj. II + zu-Inf.</span><span class="phrase-note">Es wäre vielleicht sinnvoll, die Kosten zuerst zu berücksichtigen.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Vorschlag annehmen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Begeistert</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ja, sehr gerne!</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ja, mit Vergnügen!</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin dabei!<span class="phrase-note">umgangssprachlich</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das klingt nach einem guten Plan!</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Genau das brauchen wir.</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Neutral / offen</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ja, das <strong>wäre</strong> keine schlechte Idee.<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Warum nicht?</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das klingt gut.</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das <strong>könnte</strong> klappen.<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das <strong>wäre</strong> es vielleicht wert, auszuprobieren.<span class="phrase-note gram-tag">Konj. II + zu-Inf.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Vorschlag ablehnen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Direkt</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das ist leider keine gute Idee.</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Höflich</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das ist nicht wirklich mein Ding.</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin nicht sehr davon begeistert, + zu + Infinitiv.<span class="phrase-note">Ich bin nicht sehr davon begeistert, früh anzufangen.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich <strong>würde</strong> lieber + Infinitiv.<span class="phrase-note gram-tag">Konj. II + Inf.</span><span class="phrase-note">Ich würde lieber früher aufbrechen.</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich bin davon nicht ganz überzeugt.</div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das einzige Problem dabei <strong>wäre</strong>…<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Vorschläge" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich <strong>würde</strong> es vorziehen, + zu + Infinitiv.<span class="phrase-note gram-tag">Konj. II + zu-Inf.</span><span class="phrase-note">Ich würde es vorziehen, früher anzureisen.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-vorschlaege -->
+
+
+  <!-- ══════════════════════════════════
+       GESPRÄCHSFÜHRUNG
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-gespraechsfuehrung">
+
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Höflich unterbrechen</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-plain">Um Erlaubnis bitten</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Darf ich kurz etwas sagen?</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Darf ich kurz einhaken?</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Wenn ich kurz etwas hinzufügen <strong>dürfte</strong>…<span class="phrase-note gram-tag">Konj. II von „dürfen"</span></div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Wenn ich kurz unterbrechen darf…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text"><strong>Würde</strong> es Ihnen / dir etwas ausmachen, wenn ich kurz etwas ergänze?<span class="phrase-note gram-tag">Konj. II</span></div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-plain">Die Unterbrechung ankündigen</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Entschuldigung, dass ich Sie / dich unterbreche, aber…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Entschuldigung für einen Moment, aber…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Tut mir leid, Sie / dich zu unterbrechen, aber…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Ich möchte das nicht stören, aber…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Nur kurz — ich möchte hier etwas ergänzen.</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Bevor Sie / du weitermachen / weitermachst, möchte ich kurz sagen…</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-plain">Reagieren / umlenken</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Meinen Sie / Meinst du damit, dass…?</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Sie wollen / Du willst also sagen, dass…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Das erinnert mich daran, dass…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Also, wenn das so ist,…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Einen Moment bitte…</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Entschuldigung, aber meiner Meinung nach…</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-title">Das Wort behalten</div>
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="acc-card">
+          <div class="card-label label-mid"><span class="strength-bar strength-mid"></span> Höflich</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Entschuldigung, aber <strong>dürfte</strong> ich ausreden?<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Wenn Sie / du mich kurz ausreden lassen <strong>würden / würdest</strong>…<span class="phrase-note gram-tag">Konj. II</span></div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Bitte lassen Sie / lass mich meinen Gedanken zu Ende führen.</div></div>
+          </div>
+        </div>
+        <div class="acc-card">
+          <div class="card-label label-high"><span class="strength-bar strength-high"></span> Direkt</div>
+          <div class="phrases">
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Entschuldigung, ich bin noch nicht fertig.</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Lassen Sie / Lass mich zuerst ausreden.</div></div>
+            <div class="phrase" data-section="Gesprächsführung" onclick="toggle(this)"><div class="phrase-icon"></div><div class="phrase-text">Moment — ich bin noch nicht fertig.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-gespraechsfuehrung -->
+
+
+  <!-- ══════════════════════════════════
+       MEINE SÄTZE
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-meinephrases">
+    <div id="myphrases-content"></div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM TAB BAR -->
+<nav class="tab-bar">
+  <div class="tab active" onclick="showTab('meinungen', this)">
+    <span class="tab-icon">💬</span>
+    <span>Meinungen</span>
+  </div>
+  <div class="tab" onclick="showTab('vorschlaege', this)">
+    <span class="tab-icon">💡</span>
+    <span>Vorschläge</span>
+  </div>
+  <div class="tab" onclick="showTab('gespraechsfuehrung', this)">
+    <span class="tab-icon">✋</span>
+    <span>Gespräch</span>
+  </div>
+  <div class="tab" id="tab-meinephrases" onclick="showTab('meinephrases', this)">
+    <span class="tab-icon">📌</span>
+    <span>Meine Sätze</span>
+    <span class="tab-badge" id="tab-badge">0</span>
+  </div>
+</nav>
+
+<script>
+  const SECTIONS = ['Meinungen', 'Vorschläge', 'Gesprächsführung'];
+
+  function toggle(el) {
+    const states = ['', 'used', 'want'];
+    const icons  = ['', '✓', '★'];
+    let current = states.indexOf(el.dataset.state || '');
+    let next = (current + 1) % states.length;
+    el.dataset.state = states[next];
+    el.classList.remove('used', 'want');
+    if (states[next]) el.classList.add(states[next]);
+    el.querySelector('.phrase-icon').textContent = icons[next];
+    updateStats();
+    if (document.getElementById('panel-meinephrases').classList.contains('active')) {
+      renderMyPhrases();
+    }
+  }
+
+  function updateStats() {
+    const used = document.querySelectorAll('.phrase.used').length;
+    const want = document.querySelectorAll('.phrase.want').length;
+    const total = used + want;
+    document.getElementById('count-used').textContent = used;
+    document.getElementById('count-want').textContent = want;
+    const badge = document.getElementById('tab-badge');
+    badge.textContent = total;
+    badge.classList.toggle('visible', total > 0);
+  }
+
+  function clearAll() {
+    document.querySelectorAll('.phrase').forEach(p => {
+      p.classList.remove('used', 'want');
+      p.dataset.state = '';
+      p.querySelector('.phrase-icon').textContent = '';
+    });
+    updateStats();
+    if (document.getElementById('panel-meinephrases').classList.contains('active')) {
+      renderMyPhrases();
+    }
+  }
+
+  function toggleAcc(headerEl) {
+    headerEl.closest('.accordion').classList.toggle('open');
+  }
+
+  function showTab(name, tabEl) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    tabEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (name === 'meinephrases') renderMyPhrases();
+  }
+
+  function renderMyPhrases() {
+    const container = document.getElementById('myphrases-content');
+    const used = [...document.querySelectorAll('.phrase.used')];
+    const want = [...document.querySelectorAll('.phrase.want')];
+    const total = used.length + want.length;
+
+    if (total === 0) {
+      container.innerHTML = `
+        <div class="myphrases-empty">
+          <div class="empty-icon">📌</div>
+          <p>Noch keine Sätze markiert.<br><br>
+          Tippe <strong>einmal</strong> auf einen Satz, um ihn als benutzt ✓ zu markieren,<br>
+          oder <strong>zweimal</strong> für „ausprobieren" ★.</p>
+        </div>`;
+      return;
+    }
+
+    let html = '';
+    SECTIONS.forEach(section => {
+      const secUsed = used.filter(p => p.dataset.section === section);
+      const secWant = want.filter(p => p.dataset.section === section);
+      if (secUsed.length === 0 && secWant.length === 0) return;
+
+      html += `<div class="myphrases-section">
+        <div class="myphrases-section-header">
+          <span class="myphrases-section-title">${section}</span>
+        </div>`;
+
+      if (secUsed.length > 0) {
+        html += `<div class="myphrases-group">
+          <div class="myphrases-group-label used-label">✓ Benutzt</div>`;
+        secUsed.forEach(p => {
+          const text = p.querySelector('.phrase-text').innerHTML;
+          html += `<div class="myphrases-phrase used" onclick="jumpTo(this, '${section}', '${escapeTxt(p.querySelector('.phrase-text').textContent)}')" data-ref-text="${escapeTxt(p.querySelector('.phrase-text').textContent)}">
+            <div class="mp-icon used-icon">✓</div>
+            <div class="phrase-text">${text}</div>
+          </div>`;
+        });
+        html += `</div>`;
+      }
+
+      if (secWant.length > 0) {
+        html += `<div class="myphrases-group">
+          <div class="myphrases-group-label want-label">★ Ausprobieren</div>`;
+        secWant.forEach(p => {
+          const text = p.querySelector('.phrase-text').innerHTML;
+          html += `<div class="myphrases-phrase want" onclick="jumpTo(this, '${section}', '${escapeTxt(p.querySelector('.phrase-text').textContent)}')" data-ref-text="${escapeTxt(p.querySelector('.phrase-text').textContent)}">
+            <div class="mp-icon want-icon">★</div>
+            <div class="phrase-text">${text}</div>
+          </div>`;
+        });
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+    });
+
+    html += `<button class="clear-my" onclick="clearAll()">Alle Markierungen löschen</button>`;
+    container.innerHTML = html;
+  }
+
+  function escapeTxt(str) {
+    return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').trim().substring(0, 60);
+  }
+
+  function jumpTo(el, section, textSnippet) {
+    const tabMap = { 'Meinungen': 0, 'Vorschläge': 1, 'Gesprächsführung': 2 };
+    const nameMap = { 'Meinungen': 'meinungen', 'Vorschläge': 'vorschlaege', 'Gesprächsführung': 'gespraechsfuehrung' };
+    const tabName = nameMap[section];
+    const tabEl = document.querySelectorAll('.tab')[tabMap[section]];
+    showTab(tabName, tabEl);
+    setTimeout(() => {
+      const all = document.querySelectorAll('#panel-' + tabName + ' .phrase');
+      for (const p of all) {
+        if (p.querySelector('.phrase-text').textContent.trim().substring(0, 60) === textSnippet) {
+          p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          p.style.outline = '2px solid var(--accent)';
+          setTimeout(() => p.style.outline = '', 1500);
+          break;
+        }
+      }
+    }, 150);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>German Verb Memory Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f5f0e8;
+    font-family: 'DM Mono', monospace;
+    padding: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    font-size: 2rem;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #888;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .instructions {
+    max-width: 680px;
+    margin: 0 auto 28px;
+    background: #1a1a2e;
+    color: #f5f0e8;
+    border-radius: 12px;
+    padding: 16px 22px;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+  }
+
+  .instructions strong {
+    color: #e8c547;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+  }
+
+  .print-btn {
+    display: block;
+    margin: 0 auto 32px;
+    background: #e8c547;
+    color: #1a1a2e;
+    border: none;
+    padding: 12px 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 #1a1a2e;
+  }
+
+  .print-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #1a1a2e;
+  }
+
+  /* Screen preview */
+  .page-preview {
+    max-width: 740px;
+    margin: 0 auto 32px;
+  }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .section-divider span {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  .section-divider hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid #ddd;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 12px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  .card {
+    border-radius: 10px;
+    aspect-ratio: 5/3.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    position: relative;
+    cursor: default;
+  }
+
+  .card.verb {
+    background: #1a1a2e;
+    color: #f5f0e8;
+    border: 2.5px solid #1a1a2e;
+  }
+  .card.verb .word { color: #f5f0e8; }
+  .card.verb .tag { color: #e8c547; border-color: #e8c54755; }
+
+  .card.opposite {
+    background: #f5f0e8;
+    color: #1a1a2e;
+    border: 2.5px solid #1a1a2e;
+  }
+  .card.opposite .word { color: #1a1a2e; }
+  .card.opposite .tag { color: #888; border-color: #1a1a2e33; }
+
+  .card .word {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(0.82rem, 1.6vw, 1.05rem);
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .card .tag {
+    position: absolute;
+    bottom: 7px;
+    right: 9px;
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 1px 5px;
+    opacity: 0.8;
+  }
+
+  .card .pair-num {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    font-size: 0.5rem;
+    opacity: 0.35;
+    letter-spacing: 0.05em;
+  }
+
+  .card.back {
+    background: repeating-linear-gradient(
+      45deg,
+      #1a1a2e,
+      #1a1a2e 4px,
+      #24244a 4px,
+      #24244a 14px
+    );
+    border: 2.5px solid #1a1a2e;
+  }
+  .card.back .inner {
+    width: 75%;
+    height: 75%;
+    border: 2px solid #e8c547;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card.back .inner span {
+    font-family: 'Playfair Display', serif;
+    color: #e8c547;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* =====================
+     PRINT STYLES
+     Each .print-page is exactly one A4 page.
+     ===================== */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    body, html {
+      background: white;
+      padding: 0;
+      margin: 0;
+    }
+
+    h1, .subtitle, .instructions, .print-btn, .page-preview, .section-divider {
+      display: none !important;
+    }
+
+    /* Each .print-page is a dedicated A4 page */
+    .print-page {
+      display: flex !important;
+      width: 100%;
+      /* A4 = 297mm tall, minus 2×10mm margins = 277mm */
+      height: 277mm;
+      page-break-after: always;
+      break-after: page;
+      align-items: stretch;
+    }
+
+    .print-page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .print-page .grid {
+      width: 100%;
+      height: 100%;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 3mm;
+      gap: 3mm;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      align-content: stretch;
+      justify-content: stretch;
+    }
+
+    .print-page .card {
+      aspect-ratio: unset;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+  }
+
+  /* Hide print pages on screen */
+  .print-page { display: none; }
+</style>
+</head>
+<body>
+
+<h1>German Verb Memory</h1>
+<p class="subtitle">Gegensatzpaare · Opposite Pairs</p>
+
+<div class="instructions">
+  <strong>How to play:</strong> Print pages 1 &amp; 2 (fronts), then flip the paper and print page 3 (backs). Cut along the card outlines and shuffle. Take turns flipping two cards — match each verb with its opposite to win the pair!<br><br>
+  <strong>Tip:</strong> Print on card stock (200g) and use a paper cutter for clean edges.
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨 Print Cards</button>
+
+<!-- SCREEN PREVIEWS -->
+<div class="page-preview">
+  <div class="section-divider"><hr><span>Page 1 · Verbs (front)</span><hr></div>
+  <div class="grid" id="verbGridScreen"></div>
+</div>
+
+<div class="page-preview">
+  <div class="section-divider"><hr><span>Page 2 · Opposites (front)</span><hr></div>
+  <div class="grid" id="oppositeGridScreen"></div>
+</div>
+
+<div class="page-preview">
+  <div class="section-divider"><hr><span>Page 3 · Card Backs (print on reverse)</span><hr></div>
+  <div class="grid" id="backGridScreen"></div>
+</div>
+
+<!-- PRINT-ONLY PAGES (hidden on screen, shown only when printing) -->
+<div class="print-page" id="verbPage">
+  <div class="grid" id="verbGridPrint"></div>
+</div>
+
+<div class="print-page" id="oppositePage">
+  <div class="grid" id="oppositeGridPrint"></div>
+</div>
+
+<div class="print-page" id="backPage">
+  <div class="grid" id="backGridPrint"></div>
+</div>
+
+<script>
+const pairs = [
+  ["öffnen", "schließen"],
+  ["anfangen", "aufhören"],
+  ["kommen", "gehen"],
+  ["geben", "nehmen"],
+  ["kaufen", "verkaufen"],
+  ["finden", "verlieren"],
+  ["leben", "sterben"],
+  ["sich erinnern", "vergessen"],
+  ["schieben", "ziehen"],
+  ["stehen", "sitzen"],
+  ["lieben", "hassen"],
+  ["gewinnen", "verlieren"],
+  ["fallen", "steigen"],
+  ["bauen", "zerstören"],
+  ["sprechen", "zuhören"],
+  ["unterrichten", "lernen"],
+  ["lachen", "weinen"],
+  ["arbeiten", "sich ausruhen"],
+  ["ankommen", "weggehen"],
+  ["kaputt machen", "reparieren"],
+  ["herunterladen", "hochladen"],
+  ["verleihen", "leihen"],
+  ["verpassen", "fangen"],
+  ["bestehen", "durchfallen"],
+  ["abholen", "bringen"],
+  ["schicken", "bekommen"],
+  ["anmachen", "ausmachen"],
+  ["verdienen", "ausgeben"],
+];
+
+function makeCard(type, text, num) {
+  const el = document.createElement('div');
+  if (type === 'back') {
+    el.className = 'card back';
+    el.innerHTML = `<div class="inner"><span>DE</span></div>`;
+  } else {
+    el.className = `card ${type}`;
+    const tag = type === 'verb' ? 'Verb' : 'Gegenteil';
+    el.innerHTML = `<span class="pair-num">#${num}</span><span class="word">${text}</span><span class="tag">${tag}</span>`;
+  }
+  return el;
+}
+
+const targets = [
+  ['verbGridScreen',    'verbGridPrint',    'verb'],
+  ['oppositeGridScreen','oppositeGridPrint','opposite'],
+  ['backGridScreen',    'backGridPrint',    'back'],
+];
+
+targets.forEach(([screenId, printId, type]) => {
+  const screenGrid = document.getElementById(screenId);
+  const printGrid  = document.getElementById(printId);
+  pairs.forEach((pair, i) => {
+    const n = i + 1;
+    const text = type === 'verb' ? pair[0] : type === 'opposite' ? pair[1] : '';
+    screenGrid.appendChild(makeCard(type, text, n));
+    printGrid.appendChild(makeCard(type, text, n));
+  });
+});
+</script>
+</body>
+</html>
